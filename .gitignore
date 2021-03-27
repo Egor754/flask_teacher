@@ -9,6 +9,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+test.py
 data.py
 .idea
 .Python

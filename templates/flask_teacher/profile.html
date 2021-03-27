@@ -1,52 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
-  <main class="container mt-3">
-    <div class="card my-4 mx-auto">
-      <div class="card-body m-2 m-md-4">
-        <article class="row">
-          <div class="col-5"><img src="../static/pict 1.png" class="img-fluid" alt=""></div>
-          <div class="col-7">
+    <main class="container mt-3">
+        <div class="card my-4 mx-auto">
+            <div class="card-body m-2 m-md-4">
+                <article class="row">
+                    <div class="col-5"><img src="../static/pict 1.png" class="img-fluid" alt=""></div>
+                    <div class="col-7">
 
-            <section class="teacher=info">
+                        <section class="teacher=info">
 
-              <h1 class="h2">Morris Simmmons</h1>
-              <p><span class="badge badge-secondary mr-2">Для путешествий </span>Рейтинг: 4.8 Ставка: 1200 / час</p>
-              <p>Native English language teacherHi Everyone! My name is Richard; I am a native English speaker. I was born in South Africa, Spent 12 years living in the UK and am now living in Spain. I have a degree in food science, a TEFL certificate and a level 3 in training and education. I worked in cheese manufacturing for many years and have good knowledge of dairy production and food safety topics.</p>
+                            <h1 class="h2">{{ teacher.name }}</h1>
+                            <p><span class="badge badge-secondary mr-2">{% for goal in teacher.goals %}
+                                {{ goals[goal] }}{% endfor %} </span>Рейтинг: {{ teacher.rating }}
+                                Ставка:
+                                {{ teacher.price }} / час</p>
+                            <p>{{ teacher.about }}</p>
 
-            </section>
+                        </section>
 
-            <section class="available">
+                        <section class="available">
 
-              <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
+                            <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
+                            {% for day, time in teacher.free.items() %}
+                                <h6 class="mt-4">{{ week[day] }}</h6>
+                                {% set spok = {'rest_day': True} %}
+                                {% for time,value in time.items() %}
+                                    {% if value %}
+                                        {% if spok.update({'rest_day': False}) %} {% endif %}
+                                        <a href="#" class="btn btn-outline-success mr-2 mb-2">{{ time }} свободно</a>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if spok.rest_day %}
+                                    <p>Нет свободных уроков</p>
+                                {% endif %}
+                            {% endfor %}
+                        </section>
+                    </div>
+                </article>
+            </div>
 
-              <h6 class="mt-4">Понедельник</h6>
-              <a href="#" class="btn btn-outline-success mr-2">12:00 свободно</a>
-              <a href="#" class="btn btn-outline-success  mr-2">14:00 свободно</a>
-
-              <h6 class="mt-4">Вторник</h6>
-              <a href="#" class="btn btn-outline-success  mr-2">14:00 свободно</a>
-              <a href="#" class="btn btn-outline-success  mr-2">16:00 свободно</a>
-
-              <h6 class="mt-4">Среда</h6>
-              <a href="#" class="btn btn-outline-success  mr-2">14:00 свободно</a>
-              <a href="#" class="btn btn-outline-success  mr-2">16:00 свободно</a>
-              <a href="#" class="btn btn-outline-success  mr-2">18:00 свободно</a>
-
-              <h6 class="mt-4">Четверг</h6>
-
-              <p>Нет свободных уроков</p>
-
-              <h6 class="mt-4">Пятница</h6>
-              <a href="#" class="btn btn-outline-success  mr-2">14:00 свободно</a>
-              <a href="#" class="btn btn-outline-success  mr-2">16:00 свободно</a>
-              <a href="#" class="btn btn-outline-success  mr-2">18:00 свободно</a>
-
-            </section>
-
-          </div>
-        </article>
-      </div>
-
-    </div>
-  </main>
+        </div>
+    </main>
 {% endblock %}
