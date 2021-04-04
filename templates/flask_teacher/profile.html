@@ -4,16 +4,15 @@
         <div class="card my-4 mx-auto">
             <div class="card-body m-2 m-md-4">
                 <article class="row">
-                    <div class="col-5"><img src="../static/pict 1.png" class="img-fluid" alt=""></div>
+                    <div class="col-5"><img src="{{ teacher.picture }}" class="img-fluid" alt=""></div>
                     <div class="col-7">
 
                         <section class="teacher=info">
 
                             <h1 class="h2">{{ teacher.name }}</h1>
                             <p><span class="badge badge-secondary mr-2">{% for goal in teacher.goals %}
-                                {{ goals[goal] }}{% endfor %} </span>Рейтинг: {{ teacher.rating }}
-                                Ставка:
-                                {{ teacher.price }} / час</p>
+                                {{ goals[goal] }}{% endfor %} </span><br>Рейтинг: {{ teacher.rating }}
+                                Ставка: {{ teacher.price }} / час</p>
                             <p>{{ teacher.about }}</p>
 
                         </section>
@@ -27,7 +26,11 @@
                                 {% for time,value in time.items() %}
                                     {% if value %}
                                         {% if spok.update({'rest_day': False}) %} {% endif %}
-                                        <a href="#" class="btn btn-outline-success mr-2 mb-2">{{ time }} свободно</a>
+                                        <a href="{{ url_for('booking',pk=teacher.id,day=day,time=time.split(':')[0]) }}"
+                                           class="btn
+                                        btn-outline-success mr-2
+                                        mb-2">{{ time }}
+                                            свободно</a>
                                     {% endif %}
                                 {% endfor %}
                                 {% if spok.rest_day %}
