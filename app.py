@@ -63,11 +63,13 @@ def all_teachers():
 
 @app.route('/goals/<goal>/')
 def goals(goal):
+    with open("database/goals.json", "r", encoding='utf-8') as f:
+        goals = json.load(f)
+    if goal not in goals:
+        abort(404)
     with open("database/teachers.json", "r", encoding='utf-8') as f:
         teachers = json.load(f)
     list_teachers = [teacher for teacher in teachers if goal in teacher['goals']]
-    with open("database/goals.json", "r", encoding='utf-8') as f:
-        goals = json.load(f)
     goal = goals[goal]
     return render_template('flask_teacher/goal.html', teachers=list_teachers, goal=goal)
 
@@ -113,9 +115,11 @@ def booking(pk, day, time):
     form = BookingForm(client_weekday=day, client_time=time, client_teacher=pk)
     with open("database/teachers.json", "r", encoding='utf-8') as f:
         users = json.load(f)
+    teacher = [user for user in users if user['id'] == pk]
+    if not teacher:
+        abort(404)
     with open("database/week.json", "r", encoding="utf-8") as f:
         week = json.load(f)
-    teacher = [user for user in users if user['id'] == pk]
     name = teacher[0]['name']
     day_ru = week[day]
     if form.validate_on_submit():
@@ -134,6 +138,16 @@ def booking(pk, day, time):
 @app.route('/booking_done/')
 def booking_accepted(user):
     return render_template('flask_teacher/booking_done.html', user=user)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return "<h1>Страничка не найдена</h1>", 404
+
+
+@app.errorhandler(500)
+def server_error(error):
+    return "<h1>Всё очень плохо</h1>", 500
 
 
 if __name__ == '__main__':
