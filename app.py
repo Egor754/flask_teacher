@@ -2,7 +2,7 @@ import json
 import os
 from random import sample
 
-from flask import Flask, render_template, abort, request, redirect
+from flask import Flask, render_template, abort
 from flask_wtf import CSRFProtect, FlaskForm
 from wtforms import StringField, RadioField, SubmitField, HiddenField
 from wtforms.validators import InputRequired
@@ -99,7 +99,6 @@ def order_request():
             goal = json.load(f)
         user['goal'] = goal[user['goal']]
         return order_accepted(user)
-
     return render_template('flask_teacher/request.html', form=form)
 
 
