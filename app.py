@@ -1,23 +1,147 @@
 import json
-import os
 from random import sample
 
 from flask import Flask, render_template, abort
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect, FlaskForm
-from wtforms import StringField, RadioField, SubmitField, HiddenField
+from wtforms import RadioField, StringField, SubmitField, HiddenField
 from wtforms.validators import InputRequired
 
 app = Flask(__name__)
 
 csrf = CSRFProtect(app)
 
-SECRET_KEY = os.urandom(43)
+SECRET_KEY = 'secrvcvxvxcvxcvxcvdvfnghnhgczet_key'
 app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///teacher.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+
+# class WeekDay(db.Model):
+#     __tablename__ = 'weekday'
+#     id = db.Column(db.Integer, primary_key=True)
+#     day = db.Column(db.String(20))
+#     day_ru = db.Column(db.String(100))
+#
+#
+#
+# class Time(db.Model):
+#     __tablename__ = 'time'
+#     id = db.Column(db.Integer, primary_key=True)
+#     time = db.Column(db.String(15))
+#     workload = db.Column(db.Boolean)
+#
+#
+# day_time_teacher = db.Table(
+#     "day_time_teacher",
+#     db.Column("day_id", db.Integer, db.ForeignKey("weekday.id")),
+#     db.Column("time_id", db.Integer, db.ForeignKey("time.id")),
+#     db.Column("teacher_id", db.Integer, db.ForeignKey("teacher.id")),
+# )
+#
+# teacher_goals = db.Table(
+#     "teacher_goals",
+#     db.Column("teacher_id", db.Integer, db.ForeignKey("teacher.id")),
+#     db.Column("goal_id", db.Integer, db.ForeignKey("goals.id")),
+# )
+#
+#
+# class Teacher(db.Model):
+#     __tablename__ = 'teacher'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(250))
+#     about = db.Column(db.Text)
+#     picture = db.Column(db.String(255))
+#     rating = db.Column(db.Float)
+#     price = db.Column(db.Integer)
+#     goal = db.relationship(
+#         "Goals", secondary=teacher_goals, back_populates="teacher"
+#     )
+#     student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+#     student = db.relationship('Student')
+#     day = db.relationship(
+#         "WeekDay", secondary=day_time_teacher, back_populates="weekday"
+#     )
+#     time = db.relationship(
+#         "Time", secondary=day_time_teacher, back_populates="time"
+#     )
+#
+#
+# class Goals(db.Model):
+#     __tablename__ = 'goals'
+#     id = db.Column(db.Integer, primary_key=True)
+#     goal = db.Column(db.String(255))
+#     goal_ru = db.Column(db.String(255))
+#     teacher = db.relationship(
+#         "Teacher", secondary=teacher_goals, back_populates="goals"
+#     )
+#     selection = db.relationship("SelectionTeacher")
+#
+#
+# class Student(db.Model):
+#     __tablename__ = 'student'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(255))
+#     phone = db.Column(db.String(255))
+#     teacher = db.relationship('Teacher')
+#     selection = db.relationship('SelectionTeacher')
+#
+#
+# class SelectionTeacher(db.Model):
+#     __tablename__ = 'selection'
+#     id = db.Column(db.Integer, primary_key=True)
+#     student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+#     student = db.relationship("Student")
+#     goal_id = db.Column(db.Integer, db.ForeignKey('goals.id'))
+#     goal = db.relationship("Goals")
+# db.create_all()
+# with open('database/week.json',encoding='utf-8') as f:
+#     a = json.load(f)
+#
+# for k,v in a.items():
+#     day = WeekDay(k,v)
+#     db.session.add(day)
+# db.session.commit()
+
+class Teacher(db.Model):
+    __tablename__ = 'teacher'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    about = db.Column(db.Text)
+    rating = db.Column(db.Float)
+    picture = db.Column(db.String(255))
+    price = db.Column(db.Integer)
+    goals = db.Column(db.String(255))
+    free = db.Column(db.Text)
+    booking = db.relationship('Booking', back_populates="teacher")
+
+
+class Booking(db.Model):
+    __tablename__ = 'booking'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    phone = db.Column(db.String(255))
+    week_day = db.Column(db.String(40))
+    time = db.Column(db.String(40))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'))
+    teacher = db.relationship('Teacher', back_populates="booking")
+
+
+class Request(db.Model):
+    __tablename__ = 'request'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    phone = db.Column(db.String(255))
+    goal = db.Column(db.String(255))
+    time = db.Column(db.String(10))
 
 
 class RequestForm(FlaskForm):
     name = StringField('Ваше имя', [InputRequired(message="Введите что-нибудь")])
-    phone = StringField('Ваш телефон')
+    phone = StringField('Ваш телефон', [InputRequired()])
     goal = RadioField('goal', choices=[
         ("travel", "Для путешествий"),
         ("study", "Для школы"),

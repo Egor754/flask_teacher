@@ -1,3 +1,10 @@
 {
-  "request_user": []
+    "request_user": [
+        {
+            "name": "Нина",
+            "phone": "79086313953",
+            "goal": "work",
+            "time": "7-10"
+        }
+    ]
 }
