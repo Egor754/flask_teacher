@@ -11,19 +11,24 @@
                 <div class="card mb-4">
                     <div class="card-body align-right">
 
-                        <p class="lead float-left d-inline-block mt-2 mb-0"><strong>{{ teachers|length }} преподавателей
+                        <p class="lead float-left d-inline-block mt-2 mb-0"><strong>{{ teacher_count }} преподавателей
                             в
                             базе</strong>
                         </p>
 
-                        <form class="float-right d-inline-block">
+                        <form class="float-right d-inline-block" method="post" action="{{ url_for('all_teachers') }}">
+                            {{ form.csrf_token }}
                             <div class="form-inline">
-                                <select class="custom-select my-1 mr-2" id="inlineFormCustomSelectPref">
-                                    <option selected>В случайном порядке</option>
-                                    <option value="3">Сначала лучшие по рейтингу</option>
-                                    <option value="1">Сначала дорогие</option>
-                                    <option value="2">Сначала недорогие</option>
-                                </select>
+                                {#                                <select class="custom-select my-1 mr-2" id="inlineFormCustomSelectPref">#}
+                                {#                                    <option name="sort" value="random">В случайном порядке</option>#}
+                                {#                                    <option name="sort" value="rating">Сначала лучшие по рейтингу</option>#}
+                                {#                                    <option name="sort" value="max_price">Сначала дорогие</option>#}
+                                {#                                    <option name="sort" value="min_price">Сначала недорогие</option>#}
+                                {#                                </select>#}
+{#                                {% for select in form.select_sort %}#}
+{#                                {{ goal(class_='custom-select my-1 mr-2') }} {{ goal.label(class_="form-check-label") }}#}
+{#                                {% endfor %}#}
+                                {{ form.select_sort(class_='custom-select my-1 mr-2') }}
                                 <button type="submit" class="btn btn-primary my-1">Сортировать</button>
                             </div>
                         </form>
@@ -60,4 +65,5 @@
         <div class="text-center pb-5">
             <a href="{{ url_for('order_request') }}" class="btn btn-primary">Заказать подбор</a>
         </div>
+    </main>
 {% endblock %}

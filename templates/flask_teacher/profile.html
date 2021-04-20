@@ -11,7 +11,7 @@
 
                             <h1 class="h2">{{ teacher.name }}</h1>
                             <p><span class="badge badge-secondary mr-2">{% for goal in teacher.goals %}
-                                {{ goals[goal] }}{% endfor %} </span><br>Рейтинг: {{ teacher.rating }}
+                                {{ goal.goal_ru }}{% endfor %} </span><br>Рейтинг: {{ teacher.rating }}
                                 Ставка: {{ teacher.price }} / час</p>
                             <p>{{ teacher.about }}</p>
 
@@ -20,7 +20,7 @@
                         <section class="available">
 
                             <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
-                            {% for day, time in teacher.free.items() %}
+                            {% for day, time in free.items() %}
                                 <h6 class="mt-4">{{ week[day] }}</h6>
                                 {% set spok = {'rest_day': True} %}
                                 {% for time,value in time.items() %}

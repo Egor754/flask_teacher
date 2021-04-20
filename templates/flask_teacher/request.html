@@ -34,8 +34,14 @@
                 <div class="card-body mx-3">
                     {{ form.name.label(class_="form-check-label mb-1 mt-2") }}<br>
                     {{ form.name(class_='form-control') }}
+                    {% for err in form.name.errors %}
+                        <p class="error">{{ err }}</p>
+                    {% endfor %}
                     {{ form.phone.label(class_="form-check-label mb-1 mt-2") }}<br>
                     {{ form.phone(class_='form-control') }}
+                    {% for err in form.phone.errors %}
+                        <p class="error">{{ err }}</p>
+                    {% endfor %}
                     {{ form.submit(class_='btn btn-primary mt-4 mb-2') }}
                 </div>
             </form>
